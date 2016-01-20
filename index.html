@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Node Development Training</title>
+
+		<meta name="description" content="Slides to compliment a training course on Node.js development at NAP">
+		<meta name="author" content="Matthew Green">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section style="text-align: center;">
+					<h1>Node Development Training</h1>
+					<h3>For NAP Tech</h3>
+					<p>
+						<small>Matthew Green / <a href="http://twitter.com/mjgreen145">@mjgreen145</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Agenda</h2>
+					<ol style="display: flex;">
+						<div style="flex: 1 50%;">
+							<li class="fragment">
+								<span>Basics of Node</span>
+								<ul>
+									<li>Node.js</li>
+									<li>NPM</li>
+									<li>Common modules</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								<span>Express.js</span>
+								<ul>
+									<li>Basic Server</li>
+									<li>Routes</li>
+									<li>Middleware Pattern</li>
+								</ul>
+							</li>
+							<li class="fragment">Handlebars</li>
+							<li class="fragment">Girdle</li>
+						</div>
+						<div style="flex: 1 50%;">
+							<li class="fragment">
+								<span>Testing</span>
+								<ul>
+									<li>Tools for Node Testing</li>
+									<li>Tools for Client-side testing</li>
+									<li>Coverage Tools</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								<span>Build & Deployment</span>
+								<ul>
+									<li>Grunt & NPM scripts</li>
+									<li>Jenkins</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								<span>AWS</span>
+								<ul>
+									<li>Infrastructure & Cloudformation</li>
+									<li>Monitoring</li>
+								</ul>
+							</li>
+						</div>
+					</ol>
+				</section>
+
+				<!-- ******************************** 1. Basics of Node.js ******************************** -->
+
+				<section>
+					<h1>Basics of Node.js</h1>
+				</section>
+
+				<section>
+					<h2>What is Node?</h2>
+					<ul>
+						<li class="fragment">Javascript runtime environment</li>
+						<li class="fragment">Built on Chrome's V8 engine</li>
+						<li class="fragment">Event-driven</li>
+						<li class="fragment">Non-blocking I/O</li>
+					</ul>
+					<aside class="notes">
+						Switch to terminal and run basic JS in REPL
+					</aside>
+				</section>
+
+				<section>
+					<h2>Modular</h2>
+					<ul>
+						<li>Larger applications/libraries built up of small modules</li>
+					</ul>
+					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+var myModule = require('my-module');
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Exporting & Requiring</h2>
+					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+// my-module.js
+module.exports = "Hello World!";
+					</code></pre>
+
+					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+var foo = require('my-module'); // foo = "Hello World!"
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Example - Maths</h2>
+					<aside class="notes">
+						Load maths.js
+					</aside>
+				</section>
+
+				<section>
+					<h2>Execution Flow</h2>
+					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+console.log('One');
+
+function foo() { console.log('Two'); }
+
+module.exports = 'Three';
+
+foo();
+					</code></pre>
+					<aside class="notes">
+						<ul>
+							<li>Load flow.js</li>
+							<li>Explain order of output</li>
+							<li>Load again - explain caching</li>
+						</ul>
+					</aside>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

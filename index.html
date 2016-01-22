@@ -108,11 +108,54 @@
 						<li class="fragment">Built on Chrome's V8 engine</li>
 						<li class="fragment">Event-driven</li>
 						<li class="fragment">Non-blocking I/O</li>
+						<li class="fragment">Single-threaded</li>
 					</ul>
 					<aside class="notes">
 						Switch to terminal and run basic JS in REPL
 					</aside>
 				</section>
+
+        <section>
+          <h2>Synchronous execution</h2>
+          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+function getData(id) {
+  var data = readFile('/path/to/dir/' + id);
+  return data;
+}
+
+var myData = getData(123);
+console.log(myData);
+          </code></pre>
+          <ul>
+            <li class="fragment">Fine in a multi threaded system</li>
+            <li class="fragment">Works in Node - but blocked while reading each file</li>
+            <li class="fragment">Can't serve more requests until the current one is done</li>
+          </ul>
+          <aside class="notes">
+            Node is single threaded, so any long running work which is blocking will cause a lack of throughput in an app
+          </aside>
+        </section>
+
+        <section>
+          <h2>Asynchronous execution</h2>
+          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+function getData(id, callback) {
+  var data = readFile('/path/to/dir/' + id);
+  callback(data);
+}
+
+var myData = getData(123, function(data) {
+  console.log(myData);  
+});
+          </code></pre>
+          <ul>
+            <li class="fragment">Node can execute this asynchronously</li>
+            <li class="fragment">Callback is called when ready, then Node processes it</li>
+          </ul>
+          <aside class="notes">
+            Node is single threaded, so any long running work which is blocking will cause a lack of throughput in an app
+          </aside>
+        </section>
 
 				<section>
 					<h2>Modular</h2>
@@ -122,30 +165,94 @@
 					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 var myModule = require('my-module');
 					</code></pre>
-				</section>
+				</section>				
 
-				<section>
-					<h2>Exporting & Requiring</h2>
-					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+        <section>
+          <h2>NPM</h2>
+          <ul>
+            <li class="fragment">Node Package Manager</li>
+            <li class="fragment">A place to publish, install and manage Node modules</li>
+            <li class="fragment">Similar to Maven in Java-world</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Installing a module</h2>
+          <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+$ npm install express
+          </code></pre>
+          <ul>
+            <li class="fragment">Installs the express module in your project's node_modules directory</li>
+            <li class="fragment">Also installs all of express's dependencies in its local node_modules directory</li>
+            <li class="fragment">... and so on</li>
+          </ul>
+        </section>
+
+        <section>
+          <pre style="margin: 0; width: 100%;"><code data-trim>
+├── index.js
+├── node_modules
+│   └── express
+│       ├── src
+│       │   └── express.js
+│       ├── node_modules
+│       │   ├── dependency1
+│       │   │   └── ...
+│       │   └── dependency2
+│       │       └── ...
+│       └── package.json
+└── package.json
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Using a module</h2>
+          <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+var express = require('express');
+          </code></pre>
+          <ul>
+            <li class="fragment">What is the 'express' variable?</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Exporting & Requiring</h2>
+          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 // my-module.js
 module.exports = "Hello World!";
-					</code></pre>
+          </code></pre>
 
-					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
-var foo = require('my-module'); // foo = "Hello World!"
-					</code></pre>
-				</section>
+          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+var foo = require('./my-module'); // foo = "Hello World!"
+          </code></pre>
+        </section>
 
-				<section>
-					<h2>Example - Maths</h2>
-					<aside class="notes">
-						Load maths.js
-					</aside>
-				</section>
+        <section>
+          <h2>Example - Maths</h2>
+          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+module.exports = {
+  add: function(x, y) {
+    return x+y;
+  },
+  subtract: function(x, y) {
+    return x-y;
+  },
+  multiply: function(x, y) {
+    return x*y;
+  },
+  divide: function(x, y) {
+    return x/y;
+  }
+};
+          </code></pre>
+          <aside class="notes">
+            Load maths.js
+          </aside>
+        </section>
 
-				<section>
-					<h2>Execution Flow</h2>
-					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+        <section>
+          <h2>Execution Flow</h2>
+          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 console.log('One');
 
 function foo() { console.log('Two'); }
@@ -153,15 +260,19 @@ function foo() { console.log('Two'); }
 module.exports = 'Three';
 
 foo();
-					</code></pre>
-					<aside class="notes">
-						<ul>
-							<li>Load flow.js</li>
-							<li>Explain order of output</li>
-							<li>Load again - explain caching</li>
-						</ul>
-					</aside>
-				</section>
+          </code></pre>
+          <aside class="notes">
+            <ul>
+              <li>Load flow.js</li>
+              <li>Explain order of output</li>
+              <li>Load again - explain caching</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section>
+          <h2>package.json</h2>
+        </section>
 
 			</div>
 

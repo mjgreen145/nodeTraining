@@ -33,91 +33,91 @@
 
 	<body>
 
-		<div class="reveal">
+	<div class="reveal">
 
 			<!-- Any section element inside of this container is displayed as a slide -->
-			<div class="slides">
-				<section style="text-align: center;">
-					<h1>Node Development Training</h1>
-					<h3>For NAP Tech</h3>
-					<p>
-						<small>Matthew Green / <a href="http://twitter.com/mjgreen145">@mjgreen145</a></small>
-					</p>
-				</section>
+	<div class="slides">
+		<section style="text-align: center;">
+			<h1>Node Development Training</h1>
+			<h3>For NAP Tech</h3>
+			<p>
+				<small>Matthew Green / <a href="http://twitter.com/mjgreen145">@mjgreen145</a></small>
+			</p>
+		</section>
 
-				<section>
-					<h2>Agenda</h2>
-					<ol style="display: flex;">
-						<div style="flex: 1 50%;">
-							<li class="fragment">
-								<span>Basics of Node</span>
-								<ul>
-									<li>Node.js</li>
-									<li>NPM</li>
-									<li>Common modules</li>
-								</ul>
-							</li>
-							<li class="fragment">
-								<span>Express.js</span>
-								<ul>
-									<li>Basic Server</li>
-									<li>Routes</li>
-									<li>Middleware Pattern</li>
-								</ul>
-							</li>
-							<li class="fragment">Handlebars</li>
-							<li class="fragment">Girdle</li>
-						</div>
-						<div style="flex: 1 50%;">
-							<li class="fragment">
-								<span>Testing</span>
-								<ul>
-									<li>Tools for Node Testing</li>
-									<li>Tools for Client-side testing</li>
-									<li>Coverage Tools</li>
-								</ul>
-							</li>
-							<li class="fragment">
-								<span>Build & Deployment</span>
-								<ul>
-									<li>Grunt & NPM scripts</li>
-									<li>Jenkins</li>
-								</ul>
-							</li>
-							<li class="fragment">
-								<span>AWS</span>
-								<ul>
-									<li>Infrastructure & Cloudformation</li>
-									<li>Monitoring</li>
-								</ul>
-							</li>
-						</div>
-					</ol>
-				</section>
+		<section>
+			<h2>Agenda</h2>
+			<ol style="display: flex;">
+				<div style="flex: 1 50%;">
+					<li class="fragment">
+						<span>Basics of Node</span>
+						<ul>
+							<li>Node.js</li>
+							<li>NPM</li>
+							<li>Common modules</li>
+						</ul>
+					</li>
+					<li class="fragment">
+						<span>Express.js</span>
+						<ul>
+							<li>Basic Server</li>
+							<li>Routes</li>
+							<li>Middleware Pattern</li>
+						</ul>
+					</li>
+					<li class="fragment">Handlebars</li>
+					<li class="fragment">Girdle</li>
+				</div>
+				<div style="flex: 1 50%;">
+					<li class="fragment">
+						<span>Testing</span>
+						<ul>
+							<li>Tools for Node Testing</li>
+							<li>Tools for Client-side testing</li>
+							<li>Coverage Tools</li>
+						</ul>
+					</li>
+					<li class="fragment">
+						<span>Build & Deployment</span>
+						<ul>
+							<li>Grunt & NPM scripts</li>
+							<li>Jenkins</li>
+						</ul>
+					</li>
+					<li class="fragment">
+						<span>AWS</span>
+						<ul>
+							<li>Infrastructure & Cloudformation</li>
+							<li>Monitoring</li>
+						</ul>
+					</li>
+				</div>
+			</ol>
+		</section>
 
-				<!-- ******************************** 1. Basics of Node.js ******************************** -->
+		<!-- ******************************** 1. Basics of Node.js ******************************** -->
 
-				<section>
-					<h1>Basics of Node.js</h1>
-				</section>
+		<section>
+			<h1>Basics of Node.js</h1>
+		</section>
 
-				<section>
-					<h2>What is Node?</h2>
-					<ul>
-						<li class="fragment">Javascript runtime environment</li>
-						<li class="fragment">Built on Chrome's V8 engine</li>
-						<li class="fragment">Event-driven</li>
-						<li class="fragment">Non-blocking I/O</li>
-						<li class="fragment">Single-threaded</li>
-					</ul>
-					<aside class="notes">
-						Switch to terminal and run basic JS in REPL
-					</aside>
-				</section>
+		<section>
+			<h2>What is Node?</h2>
+			<ul>
+				<li class="fragment">Javascript runtime environment</li>
+				<li class="fragment">Built on Chrome's V8 engine</li>
+				<li class="fragment">Event-driven</li>
+				<li class="fragment">Non-blocking I/O</li>
+				<li class="fragment">Single-threaded</li>
+			</ul>
+			<aside class="notes">
+				Switch to terminal and run basic JS in REPL
+			</aside>
+		</section>
 
-        <section>
-          <h2>Synchronous execution</h2>
-          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+    <section>
+      <h2>Synchronous execution</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 function getData(id) {
   var data = readFile('/path/to/dir/' + id);
   return data;
@@ -125,20 +125,20 @@ function getData(id) {
 
 var myData = getData(123);
 console.log(myData);
-          </code></pre>
-          <ul>
-            <li class="fragment">Fine in a multi threaded system</li>
-            <li class="fragment">Works in Node - but blocked while reading each file</li>
-            <li class="fragment">Can't serve more requests until the current one is done</li>
-          </ul>
-          <aside class="notes">
-            Node is single threaded, so any long running work which is blocking will cause a lack of throughput in an app
-          </aside>
-        </section>
+      </code></pre>
+      <ul>
+        <li class="fragment">Fine in a multi threaded system</li>
+        <li class="fragment">Works in Node - but blocked while reading each file</li>
+        <li class="fragment">Can't serve more requests until the current one is done</li>
+      </ul>
+      <aside class="notes">
+        Node is single threaded, so any long running work which is blocking will cause a lack of throughput in an app
+      </aside>
+    </section>
 
-        <section>
-          <h2>Asynchronous execution</h2>
-          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+    <section>
+      <h2>Asynchronous execution</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 function getData(id, callback) {
   var data = readFile('/path/to/dir/' + id);
   callback(data);
@@ -147,49 +147,49 @@ function getData(id, callback) {
 var myData = getData(123, function(data) {
   console.log(myData);  
 });
-          </code></pre>
-          <ul>
-            <li class="fragment">Node can execute this asynchronously</li>
-            <li class="fragment">Callback is called when ready, then Node processes it</li>
-          </ul>
-          <aside class="notes">
-            Node is single threaded, so any long running work which is blocking will cause a lack of throughput in an app
-          </aside>
-        </section>
+      </code></pre>
+      <ul>
+        <li class="fragment">Node can execute this asynchronously</li>
+        <li class="fragment">Callback is called when ready, then Node processes it</li>
+      </ul>
+      <aside class="notes">
+        Node is single threaded, so any long running work which is blocking will cause a lack of throughput in an app
+      </aside>
+    </section>
 
-				<section>
-					<h2>Modular</h2>
-					<ul>
-						<li>Larger applications/libraries built up of small modules</li>
-					</ul>
-					<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+		<section>
+			<h2>Modular</h2>
+			<ul>
+				<li>Larger applications/libraries built up of small modules</li>
+			</ul>
+			<pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 var myModule = require('my-module');
-					</code></pre>
-				</section>				
+			</code></pre>
+		</section>				
 
-        <section>
-          <h2>NPM</h2>
-          <ul>
-            <li class="fragment">Node Package Manager</li>
-            <li class="fragment">A place to publish, install and manage Node modules</li>
-            <li class="fragment">Similar to Maven in Java-world</li>
-          </ul>
-        </section>
+    <section>
+      <h2>NPM</h2>
+      <ul>
+        <li class="fragment">Node Package Manager</li>
+        <li class="fragment">A place to publish, install and manage Node modules</li>
+        <li class="fragment">Similar to Maven in Java-world</li>
+      </ul>
+    </section>
 
-        <section>
-          <h2>Installing a module</h2>
-          <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+    <section>
+      <h2>Installing a module</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
 $ npm install express
-          </code></pre>
-          <ul>
-            <li class="fragment">Installs the express module in your project's node_modules directory</li>
-            <li class="fragment">Also installs all of express's dependencies in its local node_modules directory</li>
-            <li class="fragment">... and so on</li>
-          </ul>
-        </section>
+      </code></pre>
+      <ul>
+        <li class="fragment">Installs the express module in your project's node_modules directory</li>
+        <li class="fragment">Also installs all of express's dependencies in its local node_modules directory</li>
+        <li class="fragment">... and so on</li>
+      </ul>
+    </section>
 
-        <section>
-          <pre style="margin: 0; width: 100%;"><code data-trim>
+    <section>
+      <pre style="margin: 0; width: 100%;"><code data-trim>
 ├── index.js
 ├── node_modules
 │   └── express
@@ -202,34 +202,34 @@ $ npm install express
 │       │       └── ...
 │       └── package.json
 └── package.json
-          </code></pre>
-        </section>
+      </code></pre>
+    </section>
 
-        <section>
-          <h2>Using a module</h2>
-          <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+    <section>
+      <h2>Using a module</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
 var express = require('express');
-          </code></pre>
-          <ul>
-            <li class="fragment">What is the 'express' variable?</li>
-          </ul>
-        </section>
+      </code></pre>
+      <ul>
+        <li class="fragment">What is the 'express' variable?</li>
+      </ul>
+    </section>
 
-        <section>
-          <h2>Exporting & Requiring</h2>
-          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+    <section>
+      <h2>Exporting & Requiring</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 // my-module.js
 module.exports = "Hello World!";
-          </code></pre>
+      </code></pre>
 
-          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 var foo = require('./my-module'); // foo = "Hello World!"
-          </code></pre>
-        </section>
+      </code></pre>
+    </section>
 
-        <section>
-          <h2>Example - Maths</h2>
-          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+    <section>
+      <h2>Example - Maths</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 module.exports = {
   add: function(x, y) {
     return x+y;
@@ -244,15 +244,15 @@ module.exports = {
     return x/y;
   }
 };
-          </code></pre>
-          <aside class="notes">
-            Load maths.js
-          </aside>
-        </section>
+      </code></pre>
+      <aside class="notes">
+        Load maths.js
+      </aside>
+    </section>
 
-        <section>
-          <h2>Execution Flow</h2>
-          <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+    <section>
+      <h2>Execution Flow</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 console.log('One');
 
 function foo() { console.log('Two'); }
@@ -260,51 +260,155 @@ function foo() { console.log('Two'); }
 module.exports = 'Three';
 
 foo();
-          </code></pre>
-          <aside class="notes">
-            <ul>
-              <li>Load flow.js</li>
-              <li>Explain order of output</li>
-              <li>Load again - explain caching</li>
-            </ul>
-          </aside>
-        </section>
+      </code></pre>
+      <aside class="notes">
+        <ul>
+          <li>Load flow.js</li>
+          <li>Explain order of output</li>
+          <li>Load again - explain caching</li>
+        </ul>
+      </aside>
+    </section>
 
-        <section>
-          <h2>package.json</h2>
-        </section>
+    <section>
+      <h2>package.json</h2>
+      <ul>
+        <li class="fragment">JSON file to contain all metadata for your module/app</li>
+        <li class="fragment">Defines name, description, version, dependencies etc..</li>
+      </ul>
+    </section>
 
-			</div>
+    <section>
+      <h2>Example</h2>
+      <pre class="fragment" style="margin: -50px 0 0; width: 100%;"><code class="hljs" data-trim>
+{
+  "name": "country-service",
+  "version": "1.0.0",
+  "description": "A module which does cool things",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/istanbul cover _mocha -- -R spec",
+    "coverage": "node_modules/.bin/istanbul check-coverage --statement 100",
+    "lint": "node_modules/.bin/jshint src/*.js test/*.js index.js"
+  },
+  "author": "NAP Product Team",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "http",
+    "url": "http://stash.vm.wtf.nap/scm/nap/country-service.git"
+  },
+  "dependencies": {
+    "express": "~4.13.3"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "express": "^4.13.3",
+    "mocha": "^2.3.4",
+  }
+}
+      </code></pre>
+    </section>
 
-		</div>
+    <section>
+      <h2>package.json - name</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+{
+  "name": "api-stubs"
+}
+      </code></pre>
+      <ul>
+        <li class="fragment">The name of the module</li>
+        <li class="fragment">The name to 'require' if you want to use the module</li>
+    </section>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+    <section>
+      <h2>package.json - main</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+{
+  "main": "index.js",
+}
+      </code></pre>
+      <ul>
+        <li class="fragment">The entry point for the module</li>
+        <li class="fragment">The file which is parsed and exported when you 'require' this module</li>
+    </section>
 
-		<script>
+    <section>
+      <h2>package.json - scripts</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+"scripts": {
+  "test": "node_modules/.bin/istanbul cover _mocha -- -R spec",
+  "coverage": "node_modules/.bin/istanbul check-coverage --statement 100",
+  "lint": "node_modules/.bin/jshint src/*.js test/*.js index.js",
+  "start": "node index.js"
+},
+      </code></pre>
+      <ul>
+        <li class="fragment">A collection of executable commands</li>
+        <li class="fragment">Execute using <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm run</code>, e.g. <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm run coverage</code></li>
+        <li class="fragment">'start', 'stop', and 'test' have shortcuts</li>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm start</code>, <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm stop</code>, <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm test</code></li>
+    </section>
 
-			// Full list of configuration options available at:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls: false,
-				progress: true,
-				history: true,
-				center: true,
+    <section>
+      <h2>package.json - dependencies</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+{
+  "dependencies": {
+    "express": "~4.13.3"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4",
+  }
+}
+      </code></pre>
+      <ul>
+        <li class="fragment">Defines all of the modules you module depends on to work</li>
+        <li class="fragment">"dependencies" = runtime, "devDependencies" = everything else</li>
+        <li class="fragment">Use <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install</code> to install into local node_modules folder</li>
+        <li class="fragment">Use <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install --production</code> to install only "dependencies"</li>
+    </section>
 
-				transition: 'slide', // none/fade/slide/convex/concave/zoom
+    <section>
+      <h2>package.json - dependencies</h2>
+      <ul>
+        <li class="fragment">To add install a module and save to your package.json file:</li>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install express --save</code></li>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install mocha --save-dev</code></li>
+    </section>
 
-				// Optional reveal.js plugins
-				dependencies: [
-					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/zoom-js/zoom.js', async: true },
-					{ src: 'plugin/notes/notes.js', async: true }
-				]
-			});
+	</div>
 
-		</script>
+	</div>
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+
+		// Full list of configuration options available at:
+		// https://github.com/hakimel/reveal.js#configuration
+		Reveal.initialize({
+			controls: false,
+			progress: true,
+			history: true,
+			center: true,
+
+			transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+			// Optional reveal.js plugins
+			dependencies: [
+				{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+				{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+				{ src: 'plugin/zoom-js/zoom.js', async: true },
+				{ src: 'plugin/notes/notes.js', async: true }
+			]
+		});
+
+	</script>
 
 	</body>
 </html>

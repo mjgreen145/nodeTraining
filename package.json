@@ -1,22 +1,19 @@
 {
-  "name": "reveal.js",
+  "name": "nodeTraining",
   "version": "3.2.0",
-  "description": "The HTML Presentation Framework",
-  "homepage": "http://lab.hakim.se/reveal-js",
-  "subdomain": "revealjs",
+  "description": "Slides for NAP Node training",
   "main": "js/reveal.js",
   "scripts": {
     "test": "grunt test",
     "start": "grunt serve"
   },
   "author": {
-    "name": "Hakim El Hattab",
-    "email": "hakim.elhattab@gmail.com",
-    "web": "http://hakim.se"
+    "name": "Matthew Green",
+    "email": "mjgreen145@gmail.com"
   },
   "repository": {
-    "type": "git",
-    "url": "git://github.com/hakimel/reveal.js.git"
+    "type": "https",
+    "url": "https://github.com/mjgreen145/nodeTraining.git"
   },
   "engines": {
     "node": "~4.1.1"

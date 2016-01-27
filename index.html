@@ -95,7 +95,7 @@
 			</ol>
 		</section>
 
-		<!-- ******************************** 1. Basics of Node.js ******************************** -->
+		<!-- ***************** 1. Basics of Node.js ***************** -->
 
 		<section>
 			<h1>Basics of Node.js</h1>
@@ -319,6 +319,7 @@ foo();
       <ul>
         <li class="fragment">The name of the module</li>
         <li class="fragment">The name to 'require' if you want to use the module</li>
+      </ul>
     </section>
 
     <section>
@@ -331,6 +332,7 @@ foo();
       <ul>
         <li class="fragment">The entry point for the module</li>
         <li class="fragment">The file which is parsed and exported when you 'require' this module</li>
+      </ul>
     </section>
 
     <section>
@@ -348,6 +350,7 @@ foo();
         <li class="fragment">Execute using <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm run</code>, e.g. <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm run coverage</code></li>
         <li class="fragment">'start', 'stop', and 'test' have shortcuts</li>
         <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm start</code>, <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm stop</code>, <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm test</code></li>
+      </ul>
     </section>
 
     <section>
@@ -368,6 +371,7 @@ foo();
         <li class="fragment">"dependencies" = runtime, "devDependencies" = everything else</li>
         <li class="fragment">Use <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install</code> to install into local node_modules folder</li>
         <li class="fragment">Use <code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install --production</code> to install only "dependencies"</li>
+      </ul>
     </section>
 
     <section>
@@ -376,6 +380,125 @@ foo();
         <li class="fragment">To add install a module and save to your package.json file:</li>
         <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install express --save</code></li>
         <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install mocha --save-dev</code></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Common Modules - built-in</h2>
+      <ul>
+        <li class="fragment">fs (File System)</li>
+        <li class="fragment">path (File Paths)</li>
+        <li class="fragment">url (URL helpers)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Common Modules - NPM</h2>
+      <ul>
+        <li class="fragment">express (HTTP Framework)</li>
+        <li class="fragment">handlebars (Templating)</li>
+        <li class="fragment">express-handlebars (More powerful features when using Handlebars + Express)</li>
+        <li class="fragment">i18n (Translations)</li>
+        <li class="fragment">mocha, sinon, chai (Testing)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Common Modules - NAP</h2>
+      <ul>
+        <li class="fragment">rest-http (HTTP Requests)</li>
+        <li class="fragment">localise-url (URL localising)</li>
+        <li class="fragment">country-service (NAP locale data)</li>
+        <li class="fragment">nap-logging (Common logger)</li>
+      </ul>
+    </section>
+
+    <!-- ***************** 2. Express.js ***************** -->
+
+    <section>
+      <h1>Express.js</h1>
+    </section>
+
+    <section>
+      <h2>Basic Server</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+// server.js
+var express = require('express');
+
+var app = express();
+
+app.listen(3000, function(){
+  console.log('App started on port 3000');
+});
+      </code></pre>
+      <aside class="notes">
+        Easy first server, but doesn't do anything...
+      </aside>
+    </section>
+
+    <section>
+      <h2>Basic Server</h2>
+      <pre style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+// server.js
+var express = require('express');
+
+var app = express();
+
+app.get('/', function(req, res) {
+  res.send('Hello World!');
+});
+
+app.listen(3000, function(){
+  console.log('App started on port 3000');
+});
+      </code></pre>
+      <aside class="notes">
+        Run this, and prove it works
+      </aside>
+    </section>
+
+    <section>
+      <h2>Moar routes!</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+// routes.js
+var setupRoutes = function(app) {
+
+  app.get('/', function(req, res) {
+    res.send('Hello World!');
+  });
+
+  app.get('/welcome', function(req, res) {
+    res.send('Welcome!');
+  });
+
+};
+
+module.exports = {
+  setupRoutes: setupRoutes
+};
+      </code></pre>
+      <aside class="notes">
+        Let's separate the routes into their own file for clarity
+      </aside>
+    </section>
+
+    <section>
+      <h2>Moar routes!</h2>
+      <pre style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+// server.js
+var express = require('express');
+
+var app = express();
+
+require('./routes/routes').setupRoutes(app);
+
+app.listen(3000, function(){
+  console.log('App started on port 3000');
+});
+      </code></pre>
+      <aside class="notes">
+        Let's separate the routes into their own file for clarity
+      </aside>
     </section>
 
 	</div>

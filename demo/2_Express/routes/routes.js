@@ -10,6 +10,10 @@ var setupRoutes = function(app) {
 		res.send('Welcome!');
 	});
 
+	app.get('/:country/:language/product/:pid', function(req, res) {
+	  res.send(req.params);
+	});
+
 };
 
 module.exports = {

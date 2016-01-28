@@ -501,6 +501,32 @@ app.listen(3000, function(){
       </aside>
     </section>
 
+    <section>
+      <h2>Variable URLs</h2>
+      <ul>
+        <li class="fragment">
+          <span>You can't hard code every URL:</span>
+          <ul class="fragment">
+            <li>/gb/en/product/157935</li>
+            <li>/us/fr/product/649761</li>
+            <li>/cn/zh/product/546973</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>URL Parameters</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+app.get('/:country/:language/product/:pid', function(req, res) {
+  res.send(req.params);
+});
+      </code></pre>
+      <aside class="notes">
+        Run this to see the output
+      </aside>
+    </section>
+
 	</div>
 
 	</div>

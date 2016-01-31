@@ -527,6 +527,254 @@ app.get('/:country/:language/product/:pid', function(req, res) {
       </aside>
     </section>
 
+    <section>
+      <h2>Middleware Pattern</h2>
+      <ul class="fragment">
+        <li>Design pattern used by Express</li>
+        <li>Similar to Filter Chain Pattern in Java</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>What is Middleware?</h2>
+      <ul class="fragment">
+        <li>Functions which have access to the <code class="hljs" data-trim style="display: inline; padding: 0 10px;">request</code>, <code class="hljs" data-trim style="display: inline; padding: 0 10px;">response</code>, and <code class="hljs" data-trim style="display: inline; padding: 0 10px;">next</code>, piece of middleware in the chain</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+function(req, res, next) {
+  // ...
+};
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>What is Middleware?</h2>
+      <ul>
+        <li class="fragment">
+          <span>Middleware can:</span>
+          <ul>
+            <li class="fragment">Execute code</li>
+            <li class="fragment">Alter the <code class="hljs" data-trim style="display: inline; padding: 0 10px;">request</code> and <code class="hljs" data-trim style="display: inline; padding: 0 10px;">response</code> objects</li>
+            <li class="fragment">End the request</li>
+            <li class="fragment">Call the <code class="hljs" data-trim style="display: inline; padding: 0 10px;">next</code> middleware function in the chain</li>
+          </ul>
+        </li>
+        <li class="fragment">If a piece of Middleware does not either end the request, or call <code class="hljs" data-trim style="display: inline; padding: 0 10px;">next()</code>, the request will be left hanging</li>
+      </ul>
+    </section>
+
+    <section data-background="#EEEEEE">
+      <img src="/images/middleware1.png" style="display: block; width: 75%; margin: 0 auto;"/>
+    </section>
+
+    <section>
+      <h2>Types of Middleware</h2>
+      <ul class="fragment">
+        <li>Application-level Middleware</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+app.use(function(req, res, next) {
+  console.log('The time is: ' + Date.now());
+  next();
+});
+      </code></pre>
+      <ul class="fragment">
+        <li>This will be called on all requests into the app</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Types of Middleware</h2>
+      <ul class="fragment">
+        <li>Router-level Middleware</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+app.get('/hello', function(req, res, next) {
+  console.log('Hello to you too');
+  next();
+}, function(req, res){
+  res.send('Hello, World!');
+});
+      </code></pre>
+      <ul class="fragment">
+        <li>Bound to requests which match this route</li>
+      </ul>
+      <aside class="notes">
+        Note the use of two bits of middleware here
+      </aside>
+    </section>
+
+    <section>
+      <h2>Types of Middleware</h2>
+      <ul class="fragment">
+        <li>Error-Handling Middleware</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
+app.use(function(err, req, res, next) {
+  console.log(err);
+  res.status(500).send('Error!!!');
+});
+      </code></pre>
+      <ul>
+        <li class="fragment">Separate from the main middleware chain</li>
+        <li class="fragment">Four arguments makes Express use this as error middleware</li>
+        <li class="fragment">Invoked if you call <code class="hljs" data-trim style="display: inline; padding: 0 10px;">next</code> with a parameter - e.g. <code class="hljs" data-trim style="display: inline; padding: 0 10px;">next('error')</code></li>
+      </ul>
+      <aside class="notes">
+        If you invoke error middleware, all other middlewares are skipped over
+        Note the need for the next parameter, even if it isn't used, for Express to interpret this as error middleware.
+      </aside>
+    </section>
+
+    <section>
+      <h2>Organise your Middleware</h2>
+      <pre style="margin: 0; width: 100%;"><code data-trim>
+├── app
+│   ├── middleware
+│   │   ├── middleware1.js
+│   │   ├── middleware2.js
+│   │   ├── middleware3.js
+│   │   └── middleware4.js
+│   ├── routes
+│   │   └── routes.js
+│   └── server.js
+│
+├── node_modules
+└── package.json
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Organise your Middleware</h2>
+      <pre style="margin: 0; width: 100%;"><code data-trim>
+var middleware1 = require('../middleware/middleware1');
+var middleware2 = require('../middleware/middleware2');
+var middleware3 = require('../middleware/middleware3');
+
+var setupRoutes = function(app) {
+  
+  app.get('/', [
+    middleware1.doSomething(),
+    middleware2.doSomething(),
+    middleware3.doSomething(),
+    function(req, res) {
+      res.send(200) 
+    }
+  ]);
+
+};
+      </code></pre>
+      <aside class="notes">
+        Full example / exercise to come, but after Handlebars
+      </aside>
+    </section>
+
+    <!-- ***************** 3. Handlebars ***************** -->
+
+    <section>
+      <h1>Handlebars</h1>
+    </section>
+
+    <section>
+      <h2>Handlebars</h2>
+      <ul>
+        <li class="fragment">Templating library</li>
+        <li class="fragment">Converts templates into rendered strings</li>
+        <li class="fragment">Logicless (almost)</li>
+        <li class="fragment">Typically used to render HTML templates into HTML</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Example</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+&lt;html&gt;
+  &lt;head&gt;&lt;/head&gt;
+  &lt;body&gt;
+    Hello {{name}}!
+  &lt;/body&gt;
+&lt;/html&gt;
+      </code></pre>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+app.get('/user/:name', function(req, res) {
+  var template = fs.readFileSync('./views/user.hbs').toString();
+
+  var html = handlebars.compile(template)({
+    name: req.params.name
+  });
+
+  res.send(html);
+});
+
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Nested data</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+Hello {{user.name}}, your ID is {{user.id}}
+      </code></pre>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+handlebars.compile(template)({
+  user: {
+    name: 'Matt',
+    id: '123456789'
+  }
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Helpers - Lists</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+{{#each users}}
+  &lt;{{this}}&gt;
+{{/each}}
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Helpers - if / else / unless</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+Hello {{user.name}}, your ID is {{user.id}}
+{{#if user.isManager}}
+  You are a manager!
+{{/if}}
+      </code></pre>
+
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+Hello {{user.name}}, your ID is {{user.id}}
+{{#if user.isManager}}
+  You are a manager!
+{{#else}}
+  You are not a manager
+{{/if}}
+      </code></pre>
+
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+Hello {{user.name}}, your ID is {{user.id}}
+{{#unless user.isManager}}
+  You are not a manager
+{{/unless}}
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Express + Handlebars</h2>
+      <ul>
+        <li class="fragment">Manually loading files & compiling = 😞</li>
+        <li class="fragment">Vanilla Handlebars has no support for partials</li>
+      </ul>
+    </section>
+
+    <!-- Advanced topics
+      Helpers
+      rendering performance (view cache)
+      partials
+      express config
+      controllers
+     -->
+
 	</div>
 
 	</div>

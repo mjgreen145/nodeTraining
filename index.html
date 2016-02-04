@@ -727,9 +727,11 @@ handlebars.compile(template)({
     <section>
       <h2>Helpers - Lists</h2>
       <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
-{{#each users}}
-  &lt;{{this}}&gt;
-{{/each}}
+&lt;ul&gt;      
+  {{#each users}}
+    &lt;li&gt;{{this}}&lt;/li&gt;
+  {{/each}}
+&lt;/ul&gt;
       </code></pre>
     </section>
 
@@ -764,14 +766,211 @@ Hello {{user.name}}, your ID is {{user.id}}
       <ul>
         <li class="fragment">Manually loading files & compiling = 😞</li>
         <li class="fragment">Vanilla Handlebars has no support for partials</li>
+        <li class="fragment">Defining your own helpers is messy</li>
       </ul>
+    </section>
+
+    <section>
+      <h2>express-handlebars module</h2>
+      <ul>
+        <li class="fragment">Module which extends the power of handlebars</li>
+        <li class="fragment">Nice integration on Handlebars with Express</li>
+        <li class="fragment">Puts back nice functionality which was removed from Express</li>
+      </ul>
+      <aside class="notes">
+        Express 3.x removed a lot of view engine features
+        This was a good move, because it meant developers could 
+        use view engines of their choice.
+        This module now contains a lot of the Handlebars specific 
+        functionality which was removed from Express
+      </aside>
+    </section>
+
+    <section>
+      <h2>Views - layouts and partials</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+app
+└── views
+    ├── layouts
+    │   └── index.hbs
+    └── partials
+        ├── head.hbs
+        └── body.hbs
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Layout - index.hbs</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  {{> head }}
+&lt;/head&gt;
+&lt;body&gt;
+  {{> body }}
+&lt;/body&gt;
+&lt;/html&gt;
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Partials</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+&lt!-- head.hbs --&gt;
+<meta charset="utf-8">
+<title>My Handlebars Page</title>
+      </code></pre>
+
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+&lt!-- body.hbs --&gt;
+<h1>Hello, {{user}}!</h1>
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Some config...</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+var path = require('path');
+var rootPath = path.resolve(__dirname);
+
+var express = require('express');
+var exphbs  = require('express-handlebars');
+
+var app = express();
+var hbs = exphbs.create({
+  extname: '.hbs',
+  partialsDir: rootPath + '/views/partials'
+});
+
+app.engine('.hbs', hbs.engine);
+app.set('view engine', '.hbs');
+app.set('views', rootPath + '/views/layouts');
+      </code></pre>
+      <aside class="notes">
+        Explain all this.
+      </aside>
+    </section>
+
+    <section>
+      <h2>Render it</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+app.get('/handlebars/:user', function(req, res) {
+    
+  res.render('index', {
+    user: req.params.user
+  }, function(err, html) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(html);  
+    }
+  });
+
+});
+      </code></pre>
+      <aside class="notes">
+        Explain the second parameter - the data for the view
+        Explain this is optional - can be a callback as a second parameter. 
+      </aside>
+    </section>
+
+    <section>
+      <h2>res.locals</h2>
+      <ul>
+        <li class="fragment">Object which can contain data for the view</li>
+        <li class="fragment">Scoped to each individual request/response</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+app.get('/handlebars/:user', function(req, res) {
+
+  res.locals = { user: req.params.user };
+    
+  res.render('index', function(err, html) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(html);  
+    }
+  });
+
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Controllers</h2>
+      <ul>
+        <li class="fragment">A middleware dedicated to rendering and responding</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+// controller.js
+var controller = {
+  render: function(req, res) {
+    res.render('index', function(err, html) {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).send(html);  
+      }
+    });
+  }
+};
+
+module.exports = controller;
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Controllers</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+var controller = require('../controllers/controller');
+
+app.get('/handlebars/:user',
+  function(req, res, next) {
+    res.locals = { user: req.params.user };
+    next();
+  },
+  controller.render
+);
+      </code></pre>
+      <aside class="notes">
+        Lets tidy up our route
+      </aside>
+    </section>
+
+    <section>
+      <h2>Tidying up..</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+var controller = require('../controllers/controller');
+var userMiddleware = require('../middleware/userMiddleware');
+
+app.get('/handlebars/:user',
+  userMiddleware.getUser,
+  controller.render
+);
+      </code></pre>
+
+      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+var userMiddleware = {
+  getUser: function(req, res, next) {
+    res.locals = {
+      user: req.params.user
+    };
+    next();
+  }
+};
+
+module.exports = userMiddleware;
+      </code></pre>
+      <aside class="notes">
+        Lets tidy up our route
+      </aside>
     </section>
 
     <!-- Advanced topics
       Helpers
       rendering performance (view cache)
-      partials
-      express config
       controllers
      -->
 

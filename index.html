@@ -788,7 +788,7 @@ Hello {{user.name}}, your ID is {{user.id}}
 
     <section>
       <h2>Views - layouts and partials</h2>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="hljs" data-trim>
 app
 └── views
     ├── layouts
@@ -801,7 +801,7 @@ app
 
     <section>
       <h2>Layout - index.hbs</h2>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -816,21 +816,21 @@ app
 
     <section>
       <h2>Partials</h2>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
-&lt!-- head.hbs --&gt;
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+&lt;!-- head.hbs --&gt;
 <meta charset="utf-8">
 <title>My Handlebars Page</title>
       </code></pre>
 
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
-&lt!-- body.hbs --&gt;
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+&lt;!-- body.hbs --&gt;
 <h1>Hello, {{user}}!</h1>
       </code></pre>
     </section>
 
     <section>
       <h2>Some config...</h2>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 var path = require('path');
 var rootPath = path.resolve(__dirname);
 
@@ -854,7 +854,7 @@ app.set('views', rootPath + '/views/layouts');
 
     <section>
       <h2>Render it</h2>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 app.get('/handlebars/:user', function(req, res) {
     
   res.render('index', {
@@ -881,7 +881,7 @@ app.get('/handlebars/:user', function(req, res) {
         <li class="fragment">Object which can contain data for the view</li>
         <li class="fragment">Scoped to each individual request/response</li>
       </ul>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 app.get('/handlebars/:user', function(req, res) {
 
   res.locals = { user: req.params.user };
@@ -903,7 +903,7 @@ app.get('/handlebars/:user', function(req, res) {
       <ul>
         <li class="fragment">A middleware dedicated to rendering and responding</li>
       </ul>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 // controller.js
 var controller = {
   render: function(req, res) {
@@ -923,7 +923,7 @@ module.exports = controller;
 
     <section>
       <h2>Controllers</h2>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 var controller = require('../controllers/controller');
 
 app.get('/handlebars/:user',
@@ -941,7 +941,7 @@ app.get('/handlebars/:user',
 
     <section>
       <h2>Tidying up..</h2>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 var controller = require('../controllers/controller');
 var userMiddleware = require('../middleware/userMiddleware');
 
@@ -951,7 +951,7 @@ app.get('/handlebars/:user',
 );
       </code></pre>
 
-      <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 var userMiddleware = {
   getUser: function(req, res, next) {
     res.locals = {
@@ -968,10 +968,85 @@ module.exports = userMiddleware;
       </aside>
     </section>
 
+    <section>
+      <h2>How does render() work?</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+app.get('/user/:name', function(req, res) {
+  var template = fs.readFileSync('./views/user.hbs').toString();
+
+  var html = handlebars.compile(template)({
+    name: req.params.name
+  });
+
+  res.send(html);
+});
+      </code></pre>
+
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+app.get('/handlebars/:user', function(req, res) {
+    
+  res.render('index', {
+    user: req.params.user
+  }, function(err, html) {
+    res.send(html);  
+  });
+
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>How does render() work?</h2>
+      <ul>
+        <li>
+          <span>Once in production..</span>
+          <ul>
+            <li class="fragment">The file loaded from disk won't change</li>
+            <li class="fragment">The compiled template won't change</li>
+            <li class="fragment">Only the rendered HTML will change - based on the data</li>
+          </ul>
+        </li>
+        <li class="fragment">No need to do file loading or compiling on each request!</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Efficient Rendering</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+var file = fs.readFileSync('./views/user.hbs').toString();
+var template = handlebars.compile(file);
+
+app.get('/user/:name', function(req, res) {
+  
+  template({
+    name: req.params.name
+  });
+
+  res.send(html);
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>What about res.render()?</h2>
+      <ul>
+        <li class="fragment">We're not loading the templates ourselves</li>
+        <li class="fragment">Can we achieve the same thing in Express-Handlebars?</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+app.enable('view cache');
+      </code></pre>
+      <ul>
+        <li class="fragment">Express will cache the rendered templates for each view</li>
+        <li class="fragment">Removes any I/O or CPU intensive work from request/response cycle</li>
+      </ul>
+      <aside class="notes">
+        We've just stopped loading manually, so hwo do we achieve it with Express?
+      </aside>
+    </section>
+
     <!-- Advanced topics
       Helpers
-      rendering performance (view cache)
-      controllers
      -->
 
 	</div>

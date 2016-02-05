@@ -1041,13 +1041,212 @@ app.enable('view cache');
         <li class="fragment">Removes any I/O or CPU intensive work from request/response cycle</li>
       </ul>
       <aside class="notes">
-        We've just stopped loading manually, so hwo do we achieve it with Express?
+        We've just stopped loading manually, so how do we achieve it with Express?
       </aside>
     </section>
 
-    <!-- Advanced topics
-      Helpers
-     -->
+    <section>
+      <h2>Helpers</h2>
+      <ul>
+        <li class="fragment">Handlebars is logicless, apart from basic helpers</li>
+        <li class="fragment">You can define your own helpers</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Helpers - an example</h2>
+      <ul>
+        <li class="fragment">Native Handlebars:</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+Handlebars.registerHelper('userAction', function(user) {
+  if(user.signedIn) {
+    return "Log out";
+  } else {
+    return "Sign in";
+  }
+});
+      </code></pre>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+&lt;a href="#"&gt;Click here to {{userAction user}}&lt;/a&gt;
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Helpers - an example</h2>
+      <ul>
+        <li class="fragment">express-handlebars:</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+var helpers = {
+  userAction: function(user) {
+    if(user.signedIn) {
+      return "Log out";
+    } else {
+      return "Sign in";
+    }
+  }
+}
+      </code></pre>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+var hbs = exphbs.create({
+  extname: '.hbs',
+  partialsDir: rootPath + '/views/partials',
+  helpers: helpers
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Helpers - a final word</h2>
+      <ul>
+        <li class="fragment">Use helpers a little as possible</li>
+        <li class="fragment">Instead create everything before rendering</li>
+        <li class="fragment">Helpers useful for translations</li>
+      </ul>
+    </section>
+
+    <!-- ***************** 4. Girdle ***************** -->
+
+    <section>
+      <h1>Girdle</h1>
+    </section>
+
+    <section>
+      <h2>What is Girdle?</h2>
+      <ul>
+        <li class="fragment">A service which returns a Handlebars template</li>
+        <li class="fragment">
+          <span>Contains all site scaffolding</span>
+          <ul>
+            <li class="fragment">Basic layout of the site</li>
+            <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">&lt;head&gt;</code> and <code class="hljs" data-trim style="display: inline; padding: 0 10px;">&lt;body&gt;</code> mark up</li>
+            <li class="fragment">Header, Nav, and Footer mark up</li>
+            <li class="fragment">All global styles and scripts</li>
+            <li class="fragment">Hooks for pages to populate</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <a target="_blank" href="http://girdle-prd1.nap-live.ext.net-a-porter.com/girdle/fabric" >
+        <h2>Demo</h2>
+      </a>
+      <aside class="notes">
+        Demo Girdle - explain Hooks
+      </aside>
+    </section>
+
+    <section>
+      <h2>Important Hooks</h2>
+      <ul>
+        <li class="fragment">{{content}} - Where the page content should go</li>
+        <li class="fragment">{{meta.title}} - Page title</li>
+        <li class="fragment">{{meta.description}} - Page description</li>
+        <li class="fragment">{{head.css.after}} - Links to page specific CSS files</li>
+        <li class="fragment">{{footer.scripts.after}} - Links to page specific JS files</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Variations</h2>
+      <ul>
+        <li class="fragment">
+          <span>Base URL: <code class="hljs" data-trim style="display: inline; padding: 0 10px;">/girdle/fabric</code></span>
+        </li>
+        <li class="fragment"><span>Different template per country/language</span>
+          <ul>
+            <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">/girdle/fabric?locale=zh-CN</code></li>
+          </ul>
+        </li>
+        <li class="fragment"><span>"Surface Analytics"</span>
+          <ul>
+            <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">/girdle/fabric?surfaceAnalytics=true</code></li>
+            <li class="fragment">If true, won't load old analytics library</li>
+            <li class="fragment">Loads jQuery at the bottom of the page</li>
+          </ul>
+        </li>
+        <li class="fragment"><span>"Canonical URL"</span>
+          <ul>
+            <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">/girdle/fabric?canonicalUrl=true</code></li>
+            <li class="fragment">Provides meta canonical URL tag</li>
+            <li class="fragment">Compulsory for new apps - Soon to be removed</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Cache Headers</h2>
+      <ul class="fragment">
+        <li>
+          <span>Girdle provides cache headers, which should be honoured</span>
+          <ul class="fragment">
+            <li>Cache-Control: max-age=3600</li>
+            <li>Cache-Control: stale-if-error=259200</li>
+            <li>Cache-Control: stale-while-revalidate=120</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Integration</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+function(req, res, next) {
+  var url = 'girdle.net-a-porter.com/girdle/fabric?locale=en-GB';
+  request.get(url, function(err, res, body) {
+    res.locals.template = Handlebars.compile(body);
+    next();
+  });  
+}
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Integration</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+function(req, res) {
+  res.render('my-page', function(err, content) {
+    var html = res.locals.template({
+      content: content,
+      meta: {
+        title: 'My Page Title',
+        description: 'My Page Description',
+      }
+    });
+
+    res.status(200).send(html);
+  });
+}
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Front-end APIs</h2>
+      <ul>
+        <li class="fragment">
+          <span><code class="hljs" data-trim style="display: inline; padding: 0 10px;">NAP.customer</code></span>
+          <ul class="fragment">
+            <li>Provides all data about the user, from Seaview</li>
+          </ul>
+        </li>
+        <li class="fragment">
+          <span><code class="hljs" data-trim style="display: inline; padding: 0 10px;">NAP.basket</code></span>
+          <ul class="fragment">
+            <li>Provides all data about the user's basket, plus methods to add/remove items</li>
+          </ul>
+        </li>
+        <li class="fragment">
+          <span><code class="hljs" data-trim style="display: inline; padding: 0 10px;">NAP.webAnalytics</code></span>
+          <ul class="fragment">
+            <li>API wrapper for new Web Analytics implementation</li>
+          </ul>
+        </li>
+        <li class="fragment">Plus much more!</li>
+      </ul>
+    </section>
 
 	</div>
 

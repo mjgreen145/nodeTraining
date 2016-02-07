@@ -1196,7 +1196,7 @@ var hbs = exphbs.create({
       <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 function(req, res, next) {
   var url = 'girdle.net-a-porter.com/girdle/fabric?locale=en-GB';
-  request.get(url, function(err, res, body) {
+  request.get(url, function(err, response, body) {
     res.locals.template = Handlebars.compile(body);
     next();
   });  
@@ -1245,6 +1245,249 @@ function(req, res) {
           </ul>
         </li>
         <li class="fragment">Plus much more!</li>
+      </ul>
+    </section>
+
+    <!-- ***************** 5. Testing ***************** -->
+
+    <section>
+      <h1>Testing</h1>
+    </section>
+
+    <section>
+      <h2>Node.js Unit Testing</h2>
+      <ul>
+        <li class="fragment">Testing frmaework/tools</li>
+        <li class="fragment">Sync & Async testing</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Mocha</h2>
+      <ul>
+        <li class="fragment">Asynchronous JS unit testing framework</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+describe('My testing suite', function(){
+  
+  it('runs a basic test', function(){
+    console.log('Lets test!!');
+  });
+
+});
+      </code></pre>
+      <aside class="notes">
+        Demo this
+      </aside>
+    </section>
+
+    <section>
+      <h2>Chai</h2>
+      <ul>
+        <li class="fragment">Assertion library</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+var assert = require('chai').assert;
+
+describe('My testing suite', function(){
+  
+  it('Basic equality', function() {
+    assert.equal('Hello World!', 'Hello World!');
+  });
+
+});
+      </code></pre>
+      <aside class="notes">
+        Demo this
+      </aside>
+    </section>
+
+    <section>
+      <h2>More Assertions</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+var assert = require('chai').assert;
+      
+describe('My testing suite', function(){
+  
+  it('Basic equality... ?', function() {
+    assert.equal('17', 17);
+  });
+
+  it('Strict equality', function() {
+    assert.strictEqual(17, 17);
+  });
+
+  it('Test for types', function() {
+    assert.isTrue(true);
+    assert.isObject({});
+    assert.isArray([]);
+    assert.isFunction(function(){});
+    assert.isNull(null);
+  });
+
+});
+      </code></pre>
+      <aside class="notes">
+        Demo this
+      </aside>
+    </section>
+
+    <section>
+      <h2>Lifecycle hooks</h2>
+      <ul>
+        <li class="fragment">Mocha provides hooks for running code before/after tests</li>
+        <li class="fragment">Mocha is asynchrnous, so this won't work:</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+describe('My testing suite', function(){
+
+  // Setup code
+  console.log('setup');
+  
+  it('runs a basic test', function(){
+    console.log('Lets test!!');
+  });
+
+  // teardown code
+  console.log('teardown');
+
+});
+      </code></pre>
+      <aside class="notes">
+        Demo this
+      </aside>
+    </section>
+
+    <section>
+      <h2>Lifecycle hooks</h2>
+      <ul>
+        <li class="fragment">before() & after():</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+describe('My testing suite', function(){
+
+  before(function(){
+    console.log('This runs before all tests');
+  });
+
+  after(function(){
+    console.log('This runs after all tests');
+  });
+
+  it('test no. 1', function(){
+    console.log('Test Number 1');
+  });
+
+  it('test no. 2', function(){
+    console.log('Test Number 2');
+  });
+
+});
+      </code></pre>
+      <aside class="notes">
+        Demo this
+      </aside>
+    </section>
+
+    <section>
+      <h2>Lifecycle hooks</h2>
+      <ul>
+        <li class="fragment">beforeEach() & afterEach():</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+describe('My testing suite', function(){
+
+  beforeEach(function(){
+    console.log('This runs before each tests');
+  });
+
+  afterEach(function(){
+    console.log('This runs after each tests');
+  });
+
+  it('test no. 1', function(){
+    console.log('Test Number 1');
+  });
+
+  it('test no. 2', function(){
+    console.log('Test Number 2');
+  });
+
+});
+      </code></pre>
+      <aside class="notes">
+        Demo this
+      </aside>
+    </section>
+
+    <section>
+      <h2>Testing Actual Code</h2>
+      <ul>
+        <li class="fragment">Example - User Service</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+// userService.js
+var userService = {
+  getUser: function(userId) {
+    // return user object
+  }
+};
+
+module.exports = userService;
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Testing Actual Code</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+// userService.test.js
+var userService = require('../../../app/services/userService');
+
+describe('User Service', function(){
+  
+  it('Gets a user object', function(){
+    var user = userService.getUser(1234);
+
+    assert.isObject(user);
+    assert.equal(user.name, 'Matt');
+    assert.strictEqual(user.id, 1234);
+  });
+
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Splitting Up Tests</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+describe('User Service', function(){
+  var user;
+
+  before(function(){
+    user = userService.getUser(1234);
+  });
+  
+  it('Gets a user object', function(){
+    assert.isObject(user);
+  });
+
+  it('Has the correct name', function(){
+    assert.equal(user.name, 'Matt');
+  });
+
+  it('Has the correct ID', function(){
+    assert.strictEqual(user.id, 1234);
+  });
+
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Asynchronous Code</h2>
+      <ul>
+        <li class="fragment">What if a function doesn't return anything?</li>
+        <li class="fragment">How do we deal with callbacks?</li>
       </ul>
     </section>
 

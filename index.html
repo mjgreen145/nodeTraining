@@ -1526,6 +1526,211 @@ var userMiddleware = {
       </code></pre>
     </section>
 
+
+
+
+
+
+<!-- TODO MORE TESTING@!!!!!!!!!!!!!! -->
+
+
+
+    <!-- ***************** 6. Build and Deployment ***************** -->
+
+    <section>
+      <h1>Build and Deployment</h1>
+    </section>
+
+    <section>
+      <h2>Typical Build Process</h2>
+      <ul>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">npm install</code> your dependencies</li>
+        <li class="fragment">Lint your code</li>
+        <li class="fragment">Run unit tests</li>
+        <li class="fragment">Run code coverage checks</li>
+        <li class="fragment">
+          <span>Copy production files to <code class="hljs" data-trim style="display: inline; padding: 0 10px;">target</code> directory</span>
+          <ul>
+            <li class="fragment">Copy all files needed for the app</li>
+            <li class="fragment">Minify and concatenate statuc assets</li>
+            <li class="fragment">Rename asset files with content hash</li>
+            <li class="fragment">Update references to assets in templates</li>
+          </ul>
+        </li>
+        <li class="fragment">Package files up</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>NPM Scripts</h2>
+      <ul>
+        <li class="fragment">Use individual NPM scripts for linting/tests/coverage etc</li>
+        <li class="fragment">Chain all scripts in one bash script for Jenkins to execute</li>
+        <li class="fragment">What about assets?</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Grunt</h2>
+      <ul>
+        <li class="fragment">A Javascript task runner</li>
+        <li class="fragment">Execute common tasks with plugins</li>
+        <li class="fragment">Hundreds of plugins available for almost anything</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Gruntfile.js</h2>
+      <ul>
+        <li class="fragment">Add and configure all your tasks in a <code class="hljs" data-trim style="display: inline; padding: 0 10px;">gruntfile</code></li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+module.exports = function(grunt) {
+
+  // Project configuration
+  grunt.initConfig({
+
+    // task config here
+
+  });
+
+  grunt.registerTask('build', [
+    // list of tasks to execute
+  ]);
+
+};
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>grunt-usemin</h2>
+      <ul>
+        <li class="fragment">Grunt plugin to build assets</li>
+        <li class="fragment">Handles minifying, concatenating, hashing</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>TODO: usemin-config</h2>
+    </section>
+
+    <section>
+      <h2>Packaging</h2>
+      <ul>
+        <li class="fragment">
+          <span>Two packages</span>
+          <ul>
+            <li class="fragment">App</li>
+            <li class="fragment">Assets</li>
+          </ul>
+        </li>
+        <li class="fragment">Use .zip format</li>
+        <li class="fragment">Include build number in package name</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+// TODO: show package step in build script with BUILD_NUMBER
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Jenkins</h2>
+      <ul>
+        <li class="fragment">Use Jenkins to build/test/deploy code</li>
+        <li class="fragment">Aim to automate as much of your CI pipeline as possible</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Required Files</h2>
+      <ul>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">ci-build.sh</code> - Script for Jenkins to exectue</li>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">build.yaml</code> - Configuration for your build jobs</li>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">deploy.yaml</code> - Configuration for your deploy jobs</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>build.yaml</h2>
+      <!-- TODO: show example build.yaml -->
+    </section>
+
+    <section>
+      <h2>deploy.yaml</h2>
+      <!-- TODO: show example deploy.yaml -->
+    </section>
+
+    <!-- ***************** 7. AWS ***************** -->
+
+    <section>
+      <h1>AWS</h1>
+    </section>
+
+    <section>
+      <h2>S3</h2>
+      <ul>
+        <li class="fragment">Cloud storage</li>
+        <li class="fragment">Ideal for static, or rarely changing files</li>
+        <li class="fragment">Use to store static assets for the website</li>
+        <li class="fragment">NOT a fast delivery mechanism</li>
+        <li class="fragment">Use a CDN in front for fast service/caching</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>EC2</h2>
+      <ul>
+        <li class="fragment">Virtual Machines when you need them</li>
+        <li class="fragment">Launch more when you need them, tear them down when you don't</li>
+        <li class="fragment">Pre-configured Amazon Machine Images (AMIs) - OS, software, config etc</li>
+        <li class="fragment">Different combinations of CPU, memory, storage, network capacity</li>
+        <li class="fragment">Easy to scale</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Elastic Beanstalk</h2>
+      <ul>
+        <li class="fragment">Application Container</li>
+        <li class="fragment">Deploy and run your application easily</li>
+        <li class="fragment">Out the box Elastic Load Balancers</li>
+        <li class="fragment">Out the box Auto-scaling EC2 instances</li>
+        <li class="fragment">Full monitoring of your environment built-in</li>
+        <li class="fragment">Easy configuration</li>
+        <li class="fragment">Integration with CloudWatch for logs/metrics/alarms</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>CloudWatch</h2>
+      <ul>
+        <li class="fragment">Real time monitoring of AWS resources</li>
+        <li class="fragment">Monitor CPU, latency, request counts</li>
+        <li class="fragment">Add custom monitoring using CouldWatch Logs</li>
+        <li class="fragment">Set up Alarms based on any metrics</li>
+        <li class="fragment">Easy-to-setup dashboards</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>CloudWatch Logs</h2>
+      // TODO - CloudWatch Logs example and config.
+    </section>
+
+    <section>
+      <h2>CloudFormation</h2>
+      <ul>
+        <li class="fragment">Define, create, & update all of your AWS resources</li>
+        <li class="fragment">Define entire infrastructure stacks in JSON templates</li>
+        <li class="fragment">Create stacks quickly using these templates</li>
+        <li class="fragment">Parameterise templates based on environment</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>CloudWatch Logs</h2>
+      // TODO - Cloudformation config example.
+    </section>
+
 	</div>
 
 	</div>

@@ -1491,6 +1491,41 @@ describe('User Service', function(){
       </ul>
     </section>
 
+    <section>
+      <h2>Example - Making HTTP requests</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+var girdleService = {
+  
+  get: function(country, language, callback) {
+    var url = 'girdle.net-a-porter.com/girdle/fabric?locale=en-GB';
+    request.get(url, function(err, response, body) {
+      callback(body);
+    });  
+  }
+
+};
+      </code></pre>
+      <ul>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">girdleService.get()</code> doesn't return anything - how do we test it?</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Testing Asynchronous Code</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+var userService = require('../services/userService');
+
+var userMiddleware = {
+  getUser: function(req, res, next) {
+    res.locals = {
+      user: userService.getUser(req.params.user);
+    };
+    next();
+  }
+};
+      </code></pre>
+    </section>
+
 	</div>
 
 	</div>

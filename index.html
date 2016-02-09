@@ -1875,12 +1875,44 @@ $ zip -qr ../corset-assets-$BUILD_NUMBER.zip assets/*
 
     <section>
       <h2>build.yaml</h2>
-      <!-- TODO: show example build.yaml -->
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="yaml" data-trim>
+# BUILD CONFIGURATION
+build:
+  slave.node: "xbuild"
+  git.branch: "*/master"
+  artefact.type: "package"
+  nodejs.version: "4.2.1"
+
+# NOTIFICATION CONFIGURATION
+notify:
+  email: "napproduct@net-a-porter.com"
+      </code></pre>
     </section>
 
     <section>
       <h2>deploy.yaml</h2>
-      <!-- TODO: show example deploy.yaml -->
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="yaml" data-trim>
+# GLOBAL CONFIGURATON PARAMETERS
+global:
+  ldap_group: dl_NAP_Tech_Team_Committers
+  autopromote: dev1_env1
+
+# PACKAGE CONFIGURATON
+packages:
+  corset-app:
+    deployment_type: aws-cfn-app
+  corset-assets:
+    deployment_type: aws-s3
+
+# PROMOTIONS
+promotions:
+  dev1_env1:
+    order.prefix: 01
+    aws.profile: nap-dev
+    aws.region: eu-west-1
+    s3.url:"s3://nap-assets-dev/corset/"
+    s3.sync.options:'--cache-control "public, max-age=31536000"'
+      </code></pre>
     </section>
 
     <!-- ***************** 7. AWS ***************** -->
@@ -1936,8 +1968,72 @@ $ zip -qr ../corset-assets-$BUILD_NUMBER.zip assets/*
     </section>
 
     <section>
-      <h2>CloudWatch Logs</h2>
-      // TODO - CloudWatch Logs example and config.
+      <h2>CloudWatch Logs - Example</h2>
+      <ul>
+        <li class="fragment">nap-logging module has a custom NAP logger</li>
+        <li class="fragment">Log using a message, then data object</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+app.listen(config.PORT, function(){
+  logger.info('START-APP',{port:config.PORT});
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>CloudWatch Logs - Example</h2>
+      <ul>
+        <li class="fragment">Use CloudWatch config to parse and present these metrics</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="yaml" data-trim>
+CWLogs:
+  FilterPatterns:
+    appStart: '{$.message = "START-APP"}'
+      </code></pre>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="yaml" data-trim>
+AWSEBproductDetailsAppStartFilter :
+  Type : "AWS::Logs::MetricFilter"
+  Properties :
+    FilterPattern : {"Fn::FindInMap":["CWLogs", "FilterPatterns", "appStart"]}
+    MetricTransformations :
+      - MetricValue : 1
+        MetricName : appStart
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>CloudWatch Logs - Example 2</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+logger.data('PERF METRICS', {
+  service: 'GIRDLE',
+  success: true,
+  time: requestTime
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>CloudWatch Logs - Example 2</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="yaml" data-trim>
+CWLogs:
+  FilterPatterns:
+    girdleLatency: '{$.message = "PERF METRICS" 
+                  && $.service = "GIRDLE" 
+                  && $.success IS TRUE}'
+      </code></pre>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="yaml" data-trim>
+AWSEBproductDetailsGirdleSuccessPerfFilter :
+  Type : "AWS::Logs::MetricFilter"
+  Properties :
+    FilterPattern : {"Fn::FindInMap":["CWLogs", "FilterPatterns", "girdleLatency"]}
+    MetricTransformations :
+      - MetricValue : $.time
+        MetricName : girdleSuccessLatency
+      </code></pre>
+    </section>
+
+    <section data-background="#EEEEEE">
+      <img src="/images/cloudwatch1.png" style="display: block; width: 100%; margin: 0 auto;"/>
     </section>
 
     <section>

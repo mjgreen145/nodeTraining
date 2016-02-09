@@ -13,6 +13,7 @@
     "handlebars": "^4.0.5",
     "mocha": "^2.4.5",
     "node-mocks-http": "^1.5.1",
+    "request": "^2.69.0",
     "sinon": "^1.17.3"
   }
 }

@@ -1494,45 +1494,235 @@ describe('User Service', function(){
     <section>
       <h2>Example - Making HTTP requests</h2>
       <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
-var girdleService = {
+var girdleMiddleware = {
   
-  get: function(country, language, callback) {
-    var url = 'girdle.net-a-porter.com/girdle/fabric?locale=en-GB';
+  getGirdle: function(req, res, next) {
+    var url = 'girdle.net-a-porter.com/girdle/fabric';
     request.get(url, function(err, response, body) {
-      callback(body);
+      res.locals.template = Handlebars.compile(body);
+      next();
     });  
   }
 
 };
       </code></pre>
       <ul>
-        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">girdleService.get()</code> doesn't return anything - how do we test it?</li>
+        <li class="fragment"><code class="hljs" data-trim style="display: inline; padding: 0 10px;">girdleMiddleware.getGirdle()</code> doesn't return anything - how do we test it?</li>
       </ul>
     </section>
 
     <section>
       <h2>Testing Asynchronous Code</h2>
+      <ul>
+        <li class="fragment">First attempt</li>
+      </ul>
       <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
-var userService = require('../services/userService');
+describe('Girdle Middleware', function(){
 
-var userMiddleware = {
-  getUser: function(req, res, next) {
-    res.locals = {
-      user: userService.getUser(req.params.user);
-    };
-    next();
-  }
-};
+  var req = {};
+  var res = {
+    locals: {}
+  };
+  
+  it('puts a function on res.locals.template', function(){
+    girdleMiddleware.getGirdle(req, res);
+
+    assert.isFunction(res.locals.template);
+  });
+
+});
       </code></pre>
     </section>
 
+    <section>
+      <h2>Testing Asynchronous Code</h2>
+      <ul>
+        <li class="fragment">Run asserts in the callback</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+describe('Girdle Middleware', function(){
 
+  var req = {};
+  var res = {
+    locals: {}
+  };
+  
+  it('puts a function on res.locals.template', function(){
+    girdleMiddleware.getGirdle(req, res, function(){
+      assert.isFunction(res.locals.template);
+    });
+  });
 
+});
+      </code></pre>
+    </section>
 
+    <section>
+      <h2>Testing Asynchronous Code</h2>
+      <ul>
+        <li class="fragment">Tell Mocha this test is async</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+describe('Girdle Middleware', function(){
 
+  var req = {};
+  var res = {
+    locals: {}
+  };
+  
+  it('puts a function on res.locals.template', function(done){
+    girdleMiddleware.getGirdle(req, res, function(){
+      assert.isFunction(res.locals.template);
+      done();
+    });
+  });
 
-<!-- TODO MORE TESTING@!!!!!!!!!!!!!! -->
+});
+      </code></pre>
+    </section>
 
+    <section>
+      <h2>node-mocks-http</h2>
+      <ul>
+        <li class="fragment">Lets use proper req/res stubs</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+var httpMocks = require('node-mocks-http');
+
+describe('Girdle Middleware', function(){
+
+  var req, res;
+
+  beforeEach(function() {
+    req = httpMocks.createRequest();
+    res = httpMocks.createResponse();
+    res.locals = {};
+  });
+  
+  it('puts a function on res.locals.template', function(done){
+    girdleMiddleware.getGirdle(req, res, function(){
+      assert.isFunction(res.locals.template);
+      done();
+    });
+  });
+
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>What about the network?</h2>
+      <ul>
+        <li class="fragment">We don't want to actually make requests during unit tests</li>
+        <li class="fragment">Let's stub the request library</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Sinon</h2>
+      <ul>
+        <li class="fragment">JS utility library for spying/stubbing/mocking</li>
+        <li class="fragment">Get all data about how a method has been called</li>
+        <li class="fragment">Create fake HTTP servers</li>
+        <li class="fragment">Respond to requests however you want</li>
+      </ul>
+    </section>
+
+    <section>
+      <pre style="margin: 0; width: 100%;"><code class="js" data-trim>
+var sinon = require('sinon');
+
+describe('Girdle Middleware', function(){
+
+  beforeEach(function() {
+    sinon.stub(request, 'get');
+  });
+
+  afterEach(function() {
+    request.get.restore();
+  });
+  
+  it('puts a function on res.locals.template', function(done){
+    girdleMiddleware.getGirdle(req, res, function(){
+      assert.isFunction(res.locals.template);
+      done();
+    });
+  });
+
+});
+      </code></pre>
+      <ul>
+        <li class="fragment">But... We still need <code class="hljs" data-trim style="display: inline; padding: 0 10px;">request.get()</code> to run our callback</li>
+      </ul>
+    </section>
+
+    <section>
+      <pre style="margin: 0; width: 100%;"><code class="js" data-trim>
+var sinon = require('sinon');
+
+describe('Girdle Middleware', function(){
+
+  beforeEach(function() {
+    sinon.stub(request, 'get', function(url, cb) {
+      cb(null, {}, '&lt;html&gt;&lt;/html&gt;');
+    });
+  });
+
+  afterEach(function() {
+    request.get.restore();
+  });
+  
+  it('puts a function on res.locals.template', function(done){
+    girdleMiddleware.getGirdle(req, res, function(){
+      assert.isFunction(res.locals.template);
+      done();
+    });
+  });
+
+});
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Code Coverage</h2>
+      <ul>
+        <li class="fragment">How do you help ensure that you are sriting quality software?</li>
+        <li class="fragment">Test how much of your code is executed during unit tests</li>
+        <li class="fragment">Fail the build if the coverage is not at a high enough level</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Istanbul (js)</h2>
+      <ul>
+        <li class="fragment">Wrap your Mocha tests to generate coverage reports</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
+$ istanbul cover _mocha test/* -- -R spec
+      </code></pre>
+    </section>
+
+    <section data-background="#EEEEEE">
+      <img src="/images/coverage1.png" style="display: block; width: 75%; margin: 0 auto;"/>
+    </section>
+
+    <section data-background="#EEEEEE">
+      <img src="/images/coverage2.png" style="display: block; width: 100%; margin: 0 auto;"/>
+    </section>
+
+    <section data-background="#EEEEEE">
+      <img src="/images/coverage3.png" style="display: block; width: 75%; margin: 0 auto;"/>
+    </section>
+
+    <section>
+      <h2>Istanbul</h2>
+      <ul>
+        <li class="fragment">Set thresholds against coverage levels</li>
+      </ul>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="bash" data-trim>
+$ istanbul check-coverage --statement 95 --branches 95 --function 95 --lines 95
+      </code></pre>
+    </section>
 
 
     <!-- ***************** 6. Build and Deployment ***************** -->
@@ -1611,7 +1801,41 @@ module.exports = function(grunt) {
     </section>
 
     <section>
-      <h2>TODO: usemin-config</h2>
+      <h2>Asset "Blocks"</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+&lt;!-- build:js product-page.min.js --&gt;
+&lt;script async src="/components/product-video/product-video.js"&gt;&lt;/script&gt;
+&lt;script async src="/components/main-image/main-image.js"&gt;&lt;/script&gt;
+&lt;script async src="/components/product-form/product-form.js"&gt;&lt;/script&gt;
+&lt;script async src="/components/product-details/product-details.js"&gt;&lt;/script&gt;
+&lt;script async src="/components/image-zoom/image-zoom.js"&gt;&lt;/script&gt;
+&lt;!-- endbuild --&gt;
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>usemin Config</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+...
+usemin: {
+  options: {
+    assetsDirs: [
+      '<%=pkg.targetPath%>',
+      '<%=pkg.targetPath%>/assets'
+    ]
+  },
+  html: ['<%=pkg.targetPath%>/app/views/**/*.hbs'],
+  css: '<%=pkg.targetPath%>/assets/**/*.css'
+},
+...
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Rendered Blocks</h2>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+&lt;script async src="product-page.min.5f62534228179e6d.js"&gt;&lt;/script&gt;
+      </code></pre>
     </section>
 
     <section>
@@ -1627,8 +1851,8 @@ module.exports = function(grunt) {
         <li class="fragment">Use .zip format</li>
         <li class="fragment">Include build number in package name</li>
       </ul>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
-// TODO: show package step in build script with BUILD_NUMBER
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="bash" data-trim>
+$ zip -qr ../corset-assets-$BUILD_NUMBER.zip assets/*
       </code></pre>
     </section>
 

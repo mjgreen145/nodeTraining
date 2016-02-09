@@ -5,7 +5,7 @@ var userService = {
 		return {
 			name: 'Matt',
 			id: userId
-		}
+		};
 	}
 };
 

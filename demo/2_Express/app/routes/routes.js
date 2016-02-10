@@ -1,8 +1,5 @@
 'use strict';
 
-var fs = require('fs');
-var handlebars = require('handlebars');
-
 var setupRoutes = function(app) {
   
   app.get('/', function(req, res) {
@@ -13,9 +10,60 @@ var setupRoutes = function(app) {
     res.send('Welcome!');
   });
 
-  app.get('/:country/:language/product/:pid', function(req, res) {
-    res.send(req.params);
-  });
+};
+
+module.exports = {
+  setupRoutes: setupRoutes
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// app.get('/:country/:language/product/:pid', function(req, res) {
+  //   res.send(req.params);
+  // });
 
   // app.get('/user/:user', function(req, res) {
   //   var template = fs.readFileSync('./demo/2_Express/views/user.hbs').toString();
@@ -27,16 +75,10 @@ var setupRoutes = function(app) {
   //   res.send(html);
   // });
 
-  var controller = require('../controllers/controller');
-  var userMiddleware = require('../middleware/userMiddleware');
+  // var controller = require('../controllers/controller');
+  // var userMiddleware = require('../middleware/userMiddleware');
 
-  app.get('/user/:user',
-    userMiddleware.getUser,
-    controller.render
-  );
-
-};
-
-module.exports = {
-  setupRoutes: setupRoutes
-};
+  // app.get('/user/:user',
+  //   userMiddleware.getUser,
+  //   controller.render
+  // );

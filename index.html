@@ -691,16 +691,16 @@ var setupRoutes = function(app) {
 &lt;html&gt;
   &lt;head&gt;&lt;/head&gt;
   &lt;body&gt;
-    Hello {{name}}!
+    Hello {{user}}!
   &lt;/body&gt;
 &lt;/html&gt;
       </code></pre>
       <pre class="fragment" style="margin: 0; width: 100%;"><code data-trim>
-app.get('/user/:name', function(req, res) {
+app.get('/user/:userId', function(req, res) {
   var template = fs.readFileSync('./views/user.hbs').toString();
 
   var html = handlebars.compile(template)({
-    name: req.params.name
+    user: req.params.userId
   });
 
   res.send(html);
@@ -1088,7 +1088,7 @@ var helpers = {
   }
 }
       </code></pre>
-      <pre class="fragment" style="margin: 0; width: 100%;"><code class="html" data-trim>
+      <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
 var hbs = exphbs.create({
   extname: '.hbs',
   partialsDir: rootPath + '/views/partials',
@@ -2044,11 +2044,6 @@ AWSEBproductDetailsGirdleSuccessPerfFilter :
         <li class="fragment">Create stacks quickly using these templates</li>
         <li class="fragment">Parameterise templates based on environment</li>
       </ul>
-    </section>
-
-    <section>
-      <h2>CloudWatch Logs</h2>
-      // TODO - Cloudformation config example.
     </section>
 
 	</div>

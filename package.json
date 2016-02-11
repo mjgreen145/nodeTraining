@@ -4,8 +4,8 @@
   "description": "Slides for NAP Node training",
   "main": "js/reveal.js",
   "scripts": {
-    "test": "grunt test",
-    "start": "grunt serve"
+    "test": "node_modules/.bin/grunt test",
+    "start": "node_modules/.bin/grunt serve"
   },
   "author": {
     "name": "Matthew Green",

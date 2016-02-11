@@ -282,7 +282,7 @@ foo();
       <h2>Example</h2>
       <pre class="fragment" style="margin: -50px 0 0; width: 100%;"><code class="hljs" data-trim>
 {
-  "name": "country-service",
+  "name": "my-module",
   "version": "1.0.0",
   "description": "A module which does cool things",
   "main": "index.js",
@@ -295,7 +295,7 @@ foo();
   "license": "Apache-2.0",
   "repository": {
     "type": "http",
-    "url": "http://stash.vm.wtf.nap/scm/nap/country-service.git"
+    "url": "http://stash.vm.wtf.nap/scm/nap/my-module.git"
   },
   "dependencies": {
     "express": "~4.13.3"
@@ -855,7 +855,7 @@ app.set('views', rootPath + '/views/layouts');
     <section>
       <h2>Render it</h2>
       <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
-app.get('/handlebars/:user', function(req, res) {
+app.get('/user/:user', function(req, res) {
     
   res.render('index', {
     user: req.params.user
@@ -882,7 +882,7 @@ app.get('/handlebars/:user', function(req, res) {
         <li class="fragment">Scoped to each individual request/response</li>
       </ul>
       <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
-app.get('/handlebars/:user', function(req, res) {
+app.get('/user/:user', function(req, res) {
 
   res.locals = { user: req.params.user };
     
@@ -971,11 +971,11 @@ module.exports = userMiddleware;
     <section>
       <h2>How does render() work?</h2>
       <pre class="fragment" style="margin: 0; width: 100%;"><code class="js" data-trim>
-app.get('/user/:name', function(req, res) {
+app.get('/user/:userId', function(req, res) {
   var template = fs.readFileSync('./views/user.hbs').toString();
 
   var html = handlebars.compile(template)({
-    name: req.params.name
+    user: req.params.userId
   });
 
   res.send(html);
@@ -1686,7 +1686,7 @@ describe('Girdle Middleware', function(){
     <section>
       <h2>Code Coverage</h2>
       <ul>
-        <li class="fragment">How do you help ensure that you are sriting quality software?</li>
+        <li class="fragment">How do you help ensure that you are writing quality software?</li>
         <li class="fragment">Test how much of your code is executed during unit tests</li>
         <li class="fragment">Fail the build if the coverage is not at a high enough level</li>
       </ul>
@@ -1742,7 +1742,7 @@ $ istanbul check-coverage --statement 95 --branches 95 --function 95 --lines 95
           <span>Copy production files to <code class="hljs" data-trim style="display: inline; padding: 0 10px;">target</code> directory</span>
           <ul>
             <li class="fragment">Copy all files needed for the app</li>
-            <li class="fragment">Minify and concatenate statuc assets</li>
+            <li class="fragment">Minify and concatenate static assets</li>
             <li class="fragment">Rename asset files with content hash</li>
             <li class="fragment">Update references to assets in templates</li>
           </ul>
